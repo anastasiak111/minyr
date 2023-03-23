@@ -1,26 +1,19 @@
-package main 
+var input string
+scanner := bufio.NewScanner(os.Stdin)
 
-import (
-"os"
-"log"
-)
+for scanner.Scan() {
+    input = scanner.Text()
+    if input == "q" || input == "exit" {
+        fmt.Println("exit")
+        os.Exit(0)
+    } else if input == "convert" {
+        fmt.Println("Konverterer alle målingene gitt i grader Celsius til grader Fahrenheit.")
+        // funksjon som åpner fil, leser linjer, gjør endringer og lagrer nye linjer i en ny fil
 
-Func main () {
-Scr,err := os.Open( “home/anastasiak111/minyr/kjevik-temp-celsius-20220318-20230318.csv”)
-If err != nil {
-Log.Fatal(err)
-}
-Defer src.Close()
-Log.Println(scr)
+    // flere else-if setninger     
+    } else {
+        fmt.Println("Venligst velg convert, average eller exit:")
 
-Var buffer []byte 
-Buffer = make ([]byte, 1)
-For ; n != 0{
-n, err = scr.Read (buffer (I retur))
-if err != nil {
-log.Fatal(err)
-}
-}
-Log. Println(string(buffer([:n]))
-}
+    }
 
+}
