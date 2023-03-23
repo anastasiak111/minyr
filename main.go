@@ -7,7 +7,7 @@ for scanner.Scan() {
         fmt.Println("exit")
         os.Exit(0)
     } else if input == "convert" {
-        fmt.Println("Konverterer alle målingene gitt i grader Celsius til grader Fahrenheit.")
+        fmt.Println("Konverterer alle ligningene gitt i grader Celsius til grader Fahrenheit.")
         // funksjon som åpner fil, leser linjer, gjør endringer og lagrer nye linjer i en ny fil
 
     // flere else-if setninger     
