@@ -1,3 +1,5 @@
+package main
+
 var input string
 scanner := bufio.NewScanner(os.Stdin)
 
