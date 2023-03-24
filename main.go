@@ -1,50 +1,52 @@
 package main
 
 import (
-    "bufio"
-    "os"
-    "fmt"
-    "log"
-)
+	"os"
+	"log"
+	"io"
+	"strings"
+	"github.com/anastasiak111/funtemps/conv"
+)	
 
 func main() {
-    var input string
-    scanner := bufio.NewScanner(os.Stdin)
-
-    for scanner.Scan() {
-        input = scanner.Text()
-        if input == "q" || input == "exit" {
-            fmt.Println("exit")
-            os.Exit(0)
-        } else if input == "convert" {
-            fmt.Println("Konverterer alle ligningene gitt i grader Celsius til grader Fahrenheit.")
-            // funksjon som åpner fil, leser linjer, gjør endringer og lagrer nye linjer i en ny fil
+	src, err := os.Open("table.csv")
+	//src, err := os.Open("/home/janisg/minyr/kjevik-temp-celsius-20220318-20230318.csv")
+	if err != nil {
+        	log.Fatal(err)
+	}
+	defer src.Close()
+        log.Println(src)
+        
 	
-	//opne fil
-			file, err := os.Open("table.csv")
-			if err != nil {
-				log.Fatal(err)
-			}
-			defer file.Close()
+	var buffer []byte
+	var linebuf []byte // nil
+	buffer = make([]byte, 1)
+        bytesCount := 0
+	for {
+		_, err := src.Read(buffer)
+		if err != nil && err != io.EOF {
+			log.Fatal(err)
+		}
 
-	
-	// Les linjer
-			scanner := bufio.NewScanner(file)
-			var lines []string
-			for scanner.Scan() {
-				line := scanner.Text()
-				if len(line) == 0 {
-					continue // skip empty lines
-				}
-				lines = append(lines, line)
-				}
+		bytesCount++
+		//log.Printf("%c ", buffer[:n])
+		if buffer[0] == 0x0A {
+	           log.Println(string(linebuf))
+		   // Her
+		   elementArray := strings.Split(string(linebuf), ";")
+		   if len(elementArray) > 3 {
+			 celsius := elementArray[3]
+			 fahr := conv.CelsiusToFahrenheit(celsius)
+		         log.Println(elementArray[3])
+	   	   }
+                   linebuf = nil		   
+		} else {
+                   linebuf = append(linebuf, buffer[0])
+		}	
+		//log.Println(string(linebuf))
+		if err == io.EOF {
+			break
+		}
+	}
 
-	
-
-            // flere else-if setninger
-        } else {
-            fmt.Println("Venligst velg convert, average eller exit:")
-        }
-    }
 }
-

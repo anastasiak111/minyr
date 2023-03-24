@@ -5,8 +5,6 @@ import (
     "log"
     "strconv"
     "strings"
-    "strconv"
-    "strings"
     "github.com/anastasiak111/funtemps/conv"
 )
 // åpner og leser fil en, mulig feil byte atm
