@@ -1,16 +1,10 @@
 package main
 
-
-
 import (
     "bufio"
     "os"
     "fmt"
     "log"
-    "strconv"
-    "strings"
-
-"github.com/anastasiak111/funtemps/conv"
 )
 
 func main() {
@@ -26,7 +20,7 @@ func main() {
             fmt.Println("Konverterer alle ligningene gitt i grader Celsius til grader Fahrenheit.")
             // funksjon som åpner fil, leser linjer, gjør endringer og lagrer nye linjer i en ny fil
 	
-	//  åpne fil
+	//opne fil
 			file, err := os.Open("table.csv")
 			if err != nil {
 				log.Fatal(err)
@@ -45,32 +39,7 @@ func main() {
 				lines = append(lines, line)
 				}
 
-		// Gjor endringer og lagrer nye linjer i en ny fil
-			var newLines []string
-			for i, line := range lines {
-				if i == 0 {
-					newLines = append(newLines, line)
-					continue
-
-				}
-			}
-
-		fields := strings.Split(line, ";")
-				if len(fields) == 4 {
-					celsius, err := strconv.ParseFloat(fields[3], 64)
-					if err != nil {
-						log.Fatal(err)
-					}
-					fahrenheit := conv.CelsiusToFahrenheit(celsius)
-					fields[3] = fmt.Sprintf("%.2f", fahrenheit)
-					newLine := strings.Join(fields, ";")
-					newLines = append(newLines, newLine)
-				} else {
-					fmt.Printf("Error: line %d has %d fields: %v\n", i, len(fields), fields)
-					newLines = append(newLines, line)
-				}
-
-
+	
 
             // flere else-if setninger
         } else {
