@@ -1,4 +1,4 @@
-package main
+package yr
 
 import (
         "os"
@@ -16,7 +16,7 @@ import (
         "github.com/anastasiak111/funtemps/conv"
         //min funksjon for konvertering
         "fmt"
-        //formatere F verdier til string
+        //formatere F verdier til string og printe 
 
 )
 
@@ -62,7 +62,6 @@ func main() {
                                         if len(elementArray) > 3 { //hvis storre enn 3
                                         celsius, err := strconv.ParseFloat(elementArray[3], 64) // 4. element (index 3) er parsed til float64
                                                 if err != nil {
-                                                log.Printf("error parsing Celsius value in record %v: %v", elementArray, err)// feilmelding, hvis 4. element kan ikke blir gjort om til float64 fortsetter denne til neste element
                                                                                                 
                                         }
                                         fahr := conv.CelsiusToFarhenheit(celsius) //konverterer verdi
