@@ -20,7 +20,7 @@ import (
 
 )
 
-func main() {
+func ProcessLines() {
         //leser filen
         src, err := os.Open("kjevik-temp-celsius-20220318-20230318.csv")
                 if err != nil {

@@ -1,4 +1,4 @@
-package test
+package yr
 import (
         "os"
         //for open og lage filer
@@ -12,7 +12,7 @@ import (
 
 //tester antall linjer 
 func TestLineCount(t *testing.T) {
-        f, err := os.Open("kjevik-temp-fahr-20220318-20230318.csv")
+        f, err := os.Open("")
         if err != nil {
                 t.Errorf("Error opening file: %v", err)
         }
