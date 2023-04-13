@@ -30,7 +30,19 @@ func main() {
                 fmt.Println("Invalid input, try again")
             }
         } else if input == "avarage" {
-            //do something
+		 reader := bufio.NewReader(os.Stdin)
+
+            fmt.Println("Press 'c' to calculate the average temperature in Celsius, or 'f' to calculate it in Fahrenheit:")
+            unit, _ := reader.ReadString('\n')
+            unit = strings.TrimSpace(unit)
+
+            if unit == "c" {
+                yr.ProcessLines("kjevik-temp-celsius-20220318-20230318.csv", "kjevik-temp-celsius-20220318-20230318-converted.csv", conv.AverageCelsius)
+            } else if unit == "f" {
+                yr.ProcessLines("kjevik-temp-fahr-20220318-20230318.csv", "kjevik-temp-fahr-20220318-20230318-converted.csv", conv.AverageFahrenheit)
+            } else {
+                fmt.Println("Invalid input. Please press 'c' or 'f' to calculate the average temperature.")
+            }
         } else {
             fmt.Println("Venligst velg convert, average eller exit:")
         }
