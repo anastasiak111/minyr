@@ -67,7 +67,7 @@ func main() {
                                         }
                                         fahr := conv.CelsiusToFarhenheit(celsius) //konverterer verdi
 
-                                        elementArray[3] = fmt.Sprintf("%.2f", fahr) } //lager ny variabel "fahr" med F verdi med 2 desimaler og legger tilbake i 4. plassering (index 3)                                                
+                                        elementArray[3] = fmt.Sprintf("%.1f", fahr) } //lager ny variabel "fahr" med F verdi med 2 desimaler og legger tilbake i 4. plassering (index 3)                                                
                                                 if err := w.Write(elementArray); err != nil { //skriver inn den konverterte linjen i dst filen?                                              
                                                 log.Fatal(err)
                                                 }
