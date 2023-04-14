@@ -99,35 +99,38 @@ func ProcessLines() {
 
 
 func AverageTemp() {
-        src, err := os.Open("kjevik-temp-celsius-20220318-20230318.csv")
-        if err != nil {
-		log.Fatal(err)
+    src, err := os.Open("kjevik-temp-celsius-20220318-20230318.csv")
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer src.Close()
+
+    var sum float64
+    var count int
+
+    scanner := bufio.NewScanner(src)
+    isFirstLine := true // flag to skip the first line
+    for scanner.Scan() {
+        if isFirstLine {
+            isFirstLine = false
+            continue
         }
-        defer src.Close()
 
-        var sum float64
-        var count int
-
-        scanner := bufio.NewScanner(src)
-        for scanner.Scan() {
-                fields := strings.Split(scanner.Text(), ";")
-                if len(fields) > 4 {
-                        temp, err := strconv.ParseFloat(fields[3], 64)
-                        if err != nil {
-				log.Fatal(err)
-                        }
-                        sum += temp
-                        count++
-			
-                }
-		if err := scanner.Err(); err != nil {
+        fields := strings.Split(scanner.Text(), ";")
+        if len(fields) >= 4 && fields[3] != ""{
+            temp, err := strconv.ParseFloat(fields[3], 64)
+            if err != nil {
                 log.Fatal(err)
-        	}
+            }
+            sum += temp
+            count++
         }
+    }
 
+    if err := scanner.Err(); err != nil {
+        log.Fatal(err)
+    }
 
-        avg := sum / float64(count)
-	fmt.Printf("Gjennomsnittlig temperatur er", avg)
+    avg := sum / float64(count)
+    fmt.Printf("Gjennomsnittlig temperatur er %.1f\n", avg)
 }
-
-
