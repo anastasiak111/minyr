@@ -62,10 +62,21 @@ func ProcessLines() {
 
                                         elementArray := strings.Split(string(linebuf), ";") //splitter opp stringen til elementer
                                         if len(elementArray) > 3 { //hvis storre enn 3
+
+					if strings.HasPrefix(elementArray[0], "Navn") {
+                			continue // Ignore line starting with "Navn" and continue the loop
+            				}
+
                                         celsius, err := strconv.ParseFloat(elementArray[3], 64) // 4. element (index 3) er parsed til float64
-                                                if err != nil {
-                                                                                                
-                                        }
+                                                
+						if err != nil {
+                                                log.Fatal(err)
+                                                }
+
+
+						if err != nil {
+						log.Fatal(err)
+                                        	}
                                         fahr := conv.CelsiusToFarhenheit(celsius) //konverterer verdi
 					
                                         elementArray[3] = fmt.Sprintf("%.1f", fahr) } //lager ny variabel "fahr" med F verdi med 2 desimaler og legger tilbake i 4. plassering (index 3)                                                
@@ -92,8 +103,6 @@ func ProcessLines() {
 }
 
 
-	
-
 func AverageTemp() {
         src, err := os.Open("kjevik-temp-celsius-20220318-20230318.csv")
         if err != nil {
@@ -114,16 +123,16 @@ func AverageTemp() {
                         }
                         sum += temp
                         count++
+			
                 }
+		if err := scanner.Err(); err != nil {
+                log.Fatal(err)
+        	}
         }
 
-        if err := scanner.Err(); err != nil {
-		panic(err)
-        }
 
         avg := sum / float64(count)
 	fmt.Printf("Gjennomsnittlig temperatur er", avg)
 }
-
 
 
