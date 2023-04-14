@@ -47,8 +47,6 @@ func ProcessLines() {
         buffer = make([]byte, 1) //setter 1 byte for lesing
         bytesCount := 0 //startverdi
 	
-	// Keep track of the sum of all temperature values
-    	tempSum := 0.0
                         for {
                                 _, err := src.Read(buffer) // metode for da lese data fra "src" og returnerer mengde bytes, til det blir tom for linjer
                                 if err != nil && err != io.EOF {
@@ -68,9 +66,6 @@ func ProcessLines() {
                                         }
                                         fahr := conv.CelsiusToFarhenheit(celsius) //konverterer verdi
 					
-					// Add the Fahrenheit value to the sum
-                			tempSum += fahr
-
                                         elementArray[3] = fmt.Sprintf("%.1f", fahr) } //lager ny variabel "fahr" med F verdi med 2 desimaler og legger tilbake i 4. plassering (index 3)                                                
                                                 if err := w.Write(elementArray); err != nil { //skriver inn den konverterte linjen i dst filen?                                              
                                                 log.Fatal(err)
@@ -91,12 +86,6 @@ func ProcessLines() {
 
                 // Flush any remaining writes to the output file
                 w.Flush()
-
-
-		// Calculate the average temperature and print it to the console
-    		avgTemp := tempSum / float64(bytesCount/14)
-    		log.Printf("Average temperature: %.2f\n", avgTemp)
-
 
 }
 
