@@ -58,10 +58,9 @@ func ProcessLines() {
 
                                         bytesCount++ //endrer verdi av bytescount med 1 hver gang en byte er lest
                                         if buffer[0] == 0x0A { //sjekker om det er en ny linje
-                                        log.Println(string(linebuf)) //hvis ny linje gjor denne linjen til en string
 
                                         elementArray := strings.Split(string(linebuf), ";") //splitter opp stringen til elementer
-                                        if len(elementArray) > 3 { //hvis storre enn 3
+                                        if len(elementArray) > 4 { //hvis storre enn 3
 
 					if strings.HasPrefix(elementArray[0], "Navn") {
                 			continue // Ignore line starting with "Navn" and continue the loop
@@ -112,7 +111,7 @@ func AverageTemp() {
         scanner := bufio.NewScanner(src)
         for scanner.Scan() {
                 fields := strings.Split(scanner.Text(), ";")
-                if len(fields) > 3 {
+                if len(fields) > 4 {
                         temp, err := strconv.ParseFloat(fields[3], 64)
                         if err != nil {
 				log.Fatal(err)
