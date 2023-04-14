@@ -17,6 +17,8 @@ import (
         //min funksjon for konvertering
         "fmt"
         //formatere F verdier til string og printe 
+	"bufio"
+	//til funksjonen AvarageTemp
 
 )
 
@@ -88,4 +90,40 @@ func ProcessLines() {
                 w.Flush()
 
 }
+
+
+	
+
+func AverageTemp() {
+        src, err := os.Open("kjevik-temp-celsius-20220318-20230318.csv")
+        if err != nil {
+		log.Fatal(err)
+        }
+        defer src.Close()
+
+        var sum float64
+        var count int
+
+        scanner := bufio.NewScanner(src)
+        for scanner.Scan() {
+                fields := strings.Split(scanner.Text(), ";")
+                if len(fields) > 3 {
+                        temp, err := strconv.ParseFloat(fields[3], 64)
+                        if err != nil {
+				log.Fatal(err)
+                        }
+                        sum += temp
+                        count++
+                }
+        }
+
+        if err := scanner.Err(); err != nil {
+		panic(err)
+        }
+
+        avg := sum / float64(count)
+	fmt.Printf("Gjennomsnittlig temperatur er", avg)
+}
+
+
 
