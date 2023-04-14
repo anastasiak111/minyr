@@ -74,41 +74,28 @@ func ProcessLines() {
                                                 if err := w.Write(elementArray); err != nil { //skriver inn den konverterte linjen i dst filen?                                              
                                                 log.Fatal(err)
                                                 }
- 
-                                
-
+			
+						if err := w.Write(elementArray); err != nil { //skriver inn den konverterte linjen i dst filen?
+		                    		log.Fatal(err)
+		                		}
+		            } else if bytesCount == 1 { // If it is the first line, add the footer at the end
+		                newFooter := fmt.Sprintf("Data er basert på gyldig data (per 18.03.2023) (CC BY 4.0) fra Meteorologisk institutt (MET);endringen er gjort av Anastasia K.")
+		                if err := w.Write([]string{newFooter}); err != nil { // write the footer
+		                    log.Fatal(err)
+		                }
+		            } else { // else write the line as is
+		                if err := w.Write(elementArray); err != nil {
+		                    log.Fatal(err)
+		                }
+		            }
                                 linebuf = nil //etter hver iterasjon linebuf settes til null for so gjenbruke buffer igjen
 
                                 } else {
                                 linebuf = append(linebuf, buffer[0]) // append funksjon legger lagret verdi fra slicebuf i slutten av hver linje                                 
                         }
 
-                                if err == io.EOF {
-                                break  //src.read returnerer feilmelding hvis ingen flere linjer to read, dermed loopen avsluttes
-                                }
-                        }
-
                 // Flush any remaining writes to the output file
                 w.Flush()
-
-
-		// Replace the last line with "hi and goodbye"
-	lastLinePos, err := dst.Seek(0, 2) // get the position of the last byte in the file
-	if err != nil {
-	    log.Fatal(err)
-	}
-
-	for i := 1; i <= len("\nhi and goodbye")*3; i++ {
-	    _, err = dst.WriteAt([]byte{'\x00'}, lastLinePos-int64(i)) // overwrite the last line with null bytes
-	    if err != nil {
-	        log.Fatal(err)
-	    }
-	}
-
-	_, err = dst.WriteAt([]byte("hi and goodbye\n"), lastLinePos-int64(len("\nhi and goodbye"))*3) // write the new last line
-	if err != nil {
-	    log.Fatal(err)
-}
 
 
 }
