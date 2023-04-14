@@ -73,10 +73,6 @@ func ProcessLines() {
                                                 log.Fatal(err)
                                                 }
 
-
-						if err != nil {
-						log.Fatal(err)
-                                        	}
                                         fahr := conv.CelsiusToFarhenheit(celsius) //konverterer verdi
 					
                                         elementArray[3] = fmt.Sprintf("%.1f", fahr) } //lager ny variabel "fahr" med F verdi med 2 desimaler og legger tilbake i 4. plassering (index 3)                                                
