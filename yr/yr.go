@@ -62,10 +62,6 @@ func ProcessLines() {
                                         elementArray := strings.Split(string(linebuf), ";") //splitter opp stringen til elementer
                                         if len(elementArray) > 4 { //hvis storre enn 3
 
-					if strings.HasPrefix(elementArray[0], "Navn") {
-                			continue // Ignore line starting with "Navn" and continue the loop
-            				}
-
                                         celsius, err := strconv.ParseFloat(elementArray[3], 64) // 4. element (index 3) er parsed til float64
                                                 
 						if err != nil {
@@ -95,6 +91,26 @@ func ProcessLines() {
                 // Flush any remaining writes to the output file
                 w.Flush()
 
+
+		// Replace the last line with "hi and goodbye"
+	lastLinePos, err := dst.Seek(0, 2) // get the position of the last byte in the file
+	if err != nil {
+	    log.Fatal(err)
+	}
+
+	for i := 1; i <= len("\nhi and goodbye")*3; i++ {
+	    _, err = dst.WriteAt([]byte{'\x00'}, lastLinePos-int64(i)) // overwrite the last line with null bytes
+	    if err != nil {
+	        log.Fatal(err)
+	    }
+	}
+
+	_, err = dst.WriteAt([]byte("hi and goodbye\n"), lastLinePos-int64(len("\nhi and goodbye"))*3) // write the new last line
+	if err != nil {
+	    log.Fatal(err)
+}
+
+
 }
 
 
@@ -105,7 +121,8 @@ func AverageTemp() {
     }
     defer src.Close()
 
-    var sum float64
+    var sumCelsius float64
+    var sumFahr float64
     var count int
 
     scanner := bufio.NewScanner(src)
@@ -116,13 +133,17 @@ func AverageTemp() {
             continue
         }
 
-        fields := strings.Split(scanner.Text(), ";")
+	 fields := strings.Split(scanner.Text(), ";")
         if len(fields) >= 4 && fields[3] != ""{
-            temp, err := strconv.ParseFloat(fields[3], 64)
+            celsius, err := strconv.ParseFloat(fields[3], 64)
             if err != nil {
                 log.Fatal(err)
             }
-            sum += temp
+            sumCelsius += celsius
+
+            fahr := conv.CelsiusToFarhenheit(celsius)
+            sumFahr += fahr
+
             count++
         }
     }
@@ -131,6 +152,18 @@ func AverageTemp() {
         log.Fatal(err)
     }
 
-    avg := sum / float64(count)
-    fmt.Printf("Gjennomsnittlig temperatur er %.1f\n", avg)
+    avgCelsius := sumCelsius / float64(count)
+    avgFahr := sumFahr / float64(count)
+
+
+    scanner = bufio.NewScanner(os.Stdin) // declare new scanner for user input
+
+    fmt.Println("Vennligst velg 'c' for Celsius eller 'f' for Fahrenheits (c/f):")
+    scanner.Scan() // Read user input again
+    input := scanner.Text()
+    if input == "c" {
+        fmt.Printf("Gjennomsnittlig temperatur i Celsius er %.1f\n", avgCelsius)
+    } else if input == "f" {
+        fmt.Printf("Gjennomsnittlig temperatur i Fahrenheit er %.1f\n", avgFahr)
+    }
 }
