@@ -57,7 +57,7 @@ func ProcessLines() {
 
                                 bytesCount++ //endrer verdi av bytescount med 1 hver gang en byte er lest
                                 if buffer[0] == 0x0A { //sjekker om det er en ny linje
-
+						if len(linebuf) > 0 { // sjekker at linefub ikke er tom
 		                                elementArray := strings.Split(string(linebuf), ";") //splitter opp stringen til elementer
 		                                if len(elementArray) > 3 { //hvis storre enn 3
 		                                celsius, err := strconv.ParseFloat(elementArray[3], 64) // 4. element (index 3) er parsed til float64
@@ -67,11 +67,12 @@ func ProcessLines() {
 		                                fahr := conv.CelsiusToFarhenheit(celsius) //konverterer verdi
 
 		                                elementArray[3] = fmt.Sprintf("%.1f", fahr) } //lager ny variabel "fahr" med F verdi med 2 desimaler og legger tilbake i 4. plassering (index 3)
-							if err := w.Write(elementArray); err != nil { //skriver inn den konverterte linjen i dst filen?
+							if err := w.Write(elementArray); err != nil { //skriver inn den konverterte linjen i dst filen
 				                    	log.Fatal(err)
 				                	}
-
+				}
                                 linebuf = nil //etter hver iterasjon linebuf settes til null for so gjenbruke buffer igjen
+
 
 				}else {
                                 linebuf = append(linebuf, buffer[0]) // append funksjon legger lagret verdi fra slicebuf i slutten av hver linje
@@ -81,9 +82,11 @@ func ProcessLines() {
 				if err == io.EOF {
                                 break  //src.read returnerer feilmelding hvis ingen flere linjer to read, dermed loopen avsluttes
                                 }
-	}
-        // Flusher andre eventuelle ting til output filen
+			      }
+
+	// Flusher andre eventuelle ting til output filen
         w.Flush()
+
 }
 
 

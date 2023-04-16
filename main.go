@@ -17,12 +17,11 @@ func main() {
             fmt.Println("exit")
             os.Exit(0)
         } else if input == "convert" {
-            fmt.Println("den gamle filen vil bli overskrevet, fortsette? (y/n)")
+            fmt.Println("den gamle filen vil bli overskrevet, fortsette? (y/n)") //HUSK lage testen om den finnes
             scanner.Scan() // Read user input again
             confirm := scanner.Text()
             if confirm == "y" {
                 fmt.Println("Konverterer alle malingene gitt i grader Celsius til grader Fahrenheit")
-                // funksjon som opner fil, leser linjer, gjor endringer og lagrer nye linjer i en ny fil
                 yr.ProcessLines()
             } else if confirm == "n" {
                 fmt.Println("Conversion cancelled.")
