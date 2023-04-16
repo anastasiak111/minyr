@@ -18,6 +18,7 @@ import (
         "fmt"
         //formatere F verdier til string og printe 
 	"bufio"
+	//scanner i average funksjon
 )
 
 func ProcessLines() {
@@ -89,55 +90,60 @@ func ProcessLines() {
 
 
 func AverageTemp() {
-    src, err := os.Open("kjevik-temp-celsius-20220318-20230318.csv")
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer src.Close()
-
-    var sumCelsius float64
-    var sumFahr float64
-    var count int
-
-    scanner := bufio.NewScanner(src)
-    isFirstLine := true // flag to skip the first line
-    for scanner.Scan() {
-        if isFirstLine {
-            isFirstLine = false
-            continue
-        }
-
-         fields := strings.Split(scanner.Text(), ";")
-        if len(fields) >= 4 && fields[3] != ""{
-            celsius, err := strconv.ParseFloat(fields[3], 64)
-            if err != nil {
-                log.Fatal(err)
-            }
-            sumCelsius += celsius
-
-            fahr := conv.CelsiusToFarhenheit(celsius)
-            sumFahr += fahr
-
-            count++
-        }
-    }
-
-    if err := scanner.Err(); err != nil {
-        log.Fatal(err)
-    }
-
-    avgCelsius := sumCelsius / float64(count)
-    avgFahr := sumFahr / float64(count)
+	var sumCelsius float64 //definere summen
+	var sumFahr float64
+	var count int //definere counter
 
 
-    scanner = bufio.NewScanner(os.Stdin) // declare new scanner for user input
+	//leser filen
+	src, err := os.Open("kjevik-temp-celsius-20220318-20230318.csv")
+		if err != nil {
+		log.Fatal(err)
+		}
+		defer src.Close()
 
-    fmt.Println("Vennligst velg 'c' for Celsius eller 'f' for Fahrenheits (c/f):")
-    scanner.Scan() // Read user input again
-    input := scanner.Text()
-    if input == "c" {
-        fmt.Printf("Gjennomsnittlig temperatur i Celsius er %.1f\n", avgCelsius)
-    } else if input == "f" {
-        fmt.Printf("Gjennomsnittlig temperatur i Fahrenheit er %.1f\n", avgFahr)
-    }
+
+	scanner := bufio.NewScanner(src) //scanner
+	isFirstLine := true // boolean for a droppe 1. linje
+		for scanner.Scan() {
+		if isFirstLine {
+		isFirstLine = false
+		continue
+		}
+
+        fields := strings.Split(scanner.Text(), ";") //splitter opp til elementer
+        if len(fields) >= 4 && fields[3] != ""{ //hvis field er 4 eller mer og ikke er en tom string
+        celsius, err := strconv.ParseFloat(fields[3], 64) //gjor til float64
+        	if err != nil {
+        	log.Fatal(err)
+        	}
+
+
+			sumCelsius += celsius //oppdaterer summen
+       			fahr := conv.CelsiusToFarhenheit(celsius) //koverterer
+       			sumFahr += fahr //oppdaterer summen i fahr
+        		count++ //endrer verdi med +1 hver gang en valid verdi blir lest
+        		}
+			}
+
+		if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+		}
+
+
+	avgCelsius := sumCelsius / float64(count) //regner gjennomsnitt
+	avgFahr := sumFahr / float64(count) // regner gjennomnsnitt i fahr
+
+	scanner = bufio.NewScanner(os.Stdin) // ny scanner for lege input
+
+			fmt.Println("Vennligst velg 'c' for Celsius eller 'f' for Fahrenheits (c/f):") //gir valg for input
+			scanner.Scan() // leser input
+			input := scanner.Text() 
+			if input == "c" {
+			fmt.Printf("Gjennomsnittlig temperatur i Celsius er %.1f\n", avgCelsius)
+			} else if input == "f" {
+			fmt.Printf("Gjennomsnittlig temperatur i Fahrenheit er %.1f\n", avgFahr)
+			}else {
+        		fmt.Println("Venligst skriv inn c eller f:")
+        		}
 }
