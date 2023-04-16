@@ -18,8 +18,6 @@ import (
         "fmt"
         //formatere F verdier til string og printe 
 	"bufio"
-	//til funksjonen AvarageTemp
-
 )
 
 func ProcessLines() {
@@ -48,57 +46,46 @@ func ProcessLines() {
 
         buffer = make([]byte, 1) //setter 1 byte for lesing
         bytesCount := 0 //startverdi
-	
-                        for {
-                                _, err := src.Read(buffer) // metode for da lese data fra "src" og returnerer mengde bytes, til det blir tom for linjer
-                                if err != nil && err != io.EOF {
+
+			for {
+				_, err := src.Read(buffer) // metode for da lese data fra "src" og returnerer mengde bytes, til det blir tom for linjer
+                                	if err != nil && err != io.EOF {
                                         log.Fatal(err)
                                         }
-                                        
 
-                                        bytesCount++ //endrer verdi av bytescount med 1 hver gang en byte er lest
-                                        if buffer[0] == 0x0A { //sjekker om det er en ny linje
 
-                                        elementArray := strings.Split(string(linebuf), ";") //splitter opp stringen til elementer
-                                        if len(elementArray) > 4 { //hvis storre enn 3
+                                bytesCount++ //endrer verdi av bytescount med 1 hver gang en byte er lest
+                                if buffer[0] == 0x0A { //sjekker om det er en ny linje
 
-                                        celsius, err := strconv.ParseFloat(elementArray[3], 64) // 4. element (index 3) er parsed til float64
-                                                
-						if err != nil {
-                                                log.Fatal(err)
-                                                }
+		                                elementArray := strings.Split(string(linebuf), ";") //splitter opp stringen til elementer
+		                                if len(elementArray) > 3 { //hvis storre enn 3
+		                                celsius, err := strconv.ParseFloat(elementArray[3], 64) // 4. element (index 3) er parsed til float64
+							if err != nil {
+		                                        }
 
-                                        fahr := conv.CelsiusToFarhenheit(celsius) //konverterer verdi
-					
-                                        elementArray[3] = fmt.Sprintf("%.1f", fahr) } //lager ny variabel "fahr" med F verdi med 2 desimaler og legger tilbake i 4. plassering (index 3)                                                
-                                                if err := w.Write(elementArray); err != nil { //skriver inn den konverterte linjen i dst filen?                                              
-                                                log.Fatal(err)
-                                                }
-			
-						if err := w.Write(elementArray); err != nil { //skriver inn den konverterte linjen i dst filen?
-		                    		log.Fatal(err)
-		                		}
-		            } else if bytesCount == 1 { // If it is the first line, add the footer at the end
-		                newFooter := fmt.Sprintf("Data er basert på gyldig data (per 18.03.2023) (CC BY 4.0) fra Meteorologisk institutt (MET);endringen er gjort av Anastasia K.")
-		                if err := w.Write([]string{newFooter}); err != nil { // write the footer
-		                    log.Fatal(err)
-		                }
-		            } else { // else write the line as is
-		                if err := w.Write(elementArray); err != nil {
-		                    log.Fatal(err)
-		                }
-		            }
+		                                fahr := conv.CelsiusToFarhenheit(celsius) //konverterer verdi
+
+		                                elementArray[3] = fmt.Sprintf("%.1f", fahr) } //lager ny variabel "fahr" med F verdi med 2 desimaler og legger tilbake i 4. plassering (index 3)
+							if err := w.Write(elementArray); err != nil { //skriver inn den konverterte linjen i dst filen?
+				                    	log.Fatal(err)
+				                	}
+
                                 linebuf = nil //etter hver iterasjon linebuf settes til null for so gjenbruke buffer igjen
 
-                                } else {
-                                linebuf = append(linebuf, buffer[0]) // append funksjon legger lagret verdi fra slicebuf i slutten av hver linje                                 
-                        }
-
-                // Flush any remaining writes to the output file
-                w.Flush()
+				}else {
+                                linebuf = append(linebuf, buffer[0]) // append funksjon legger lagret verdi fra slicebuf i slutten av hver linje
+                        	}
 
 
+				if err == io.EOF {
+                                break  //src.read returnerer feilmelding hvis ingen flere linjer to read, dermed loopen avsluttes
+                                }
+	}
+        // Flusher andre eventuelle ting til output filen
+        w.Flush()
 }
+
+
 
 
 func AverageTemp() {
@@ -120,7 +107,7 @@ func AverageTemp() {
             continue
         }
 
-	 fields := strings.Split(scanner.Text(), ";")
+         fields := strings.Split(scanner.Text(), ";")
         if len(fields) >= 4 && fields[3] != ""{
             celsius, err := strconv.ParseFloat(fields[3], 64)
             if err != nil {

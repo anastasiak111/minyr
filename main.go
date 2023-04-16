@@ -30,7 +30,7 @@ func main() {
                 fmt.Println("Invalid input, try again")
             }
 	}else if input == "average" {
-                yr.AverageTemp()
+               yr.AverageTemp()
         } else {
             fmt.Println("Venligst velg convert, average eller exit:")
         }
